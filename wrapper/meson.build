@@ -21,17 +21,20 @@ vala_dep = [
   dependency('gstreamer-1.0'),
   dependency('gstreamer-base-1.0'),
   dependency('gstreamer-video-1.0'),
-  dependency('gstreamer-wayland-1.0'),
+#   dependency('gstreamer-wayland-1.0'),
   dependency('wayland-client')
 ]
 
 vapi_dir = meson.current_source_dir() / 'vapi'
 add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
 
+libgstwayland = meson.get_compiler('c').find_library('gstwayland-1.0')
+
 gstgtkvideosinkwrapper_sources = [
   'gstgtkvideosinkwrapper.vala',
   'gst.vapi',
-  'gtk3-wayland.vapi'
+  'gtk3-wayland.vapi',
+  'vapi/gstreamer-wayland-1.0.vapi'
 #   '../vapi/gstreamer-1.0.vapi',
 #   '../vapi/gstreamer-base-1.0.vapi',
 #   '../vapi/gstreamer-video-1.0.vapi'
@@ -39,7 +42,7 @@ gstgtkvideosinkwrapper_sources = [
 
 gstgtkvideosinkwrapper = library('gstgtkvideosinkwrapper',
   gstgtkvideosinkwrapper_sources,
-  dependencies : [vala_dep, gst_dep, gstbase_dep, gstvideo_dep],
+  dependencies : [vala_dep, gst_dep, gstbase_dep, gstvideo_dep, libgstwayland],
   install : true,
   install_dir : plugins_install_dir,
   include_directories: gst_inc,
